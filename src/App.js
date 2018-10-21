@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import axios from 'axios';
 import Heading from './Heading';
+import RunResult from './Run/RunResult';
 
 
 
@@ -22,7 +23,10 @@ class App extends Component {
     this.addCustomFood = this.addCustomFood.bind(this);
     this.updateCustomFoodInput = this.updateCustomFoodInput.bind(this);
     this.updateCustomCalsInput = this.updateCustomCalsInput.bind(this);
-    
+    this.updateEditedCalsInput = this.updateEditedCalsInput.bind(this);
+    this.deletePlateFood = this.deletePlateFood.bind(this);
+    this.clearPlate= this.clearPlate.bind(this);
+  
   }
 
 
@@ -40,7 +44,7 @@ class App extends Component {
     let promise = axios.post(`/api/food`, { name: foodInput, cals: calsInput })
     promise.then((res) => {
       this.setState({
-        food: res.data
+        yourPlate: res.data
       })
     })
   }
@@ -58,12 +62,15 @@ class App extends Component {
   }
 
   editPlateFoodCals(id, text) {
-    let promise = axios.put(`/api/food/${id}`, { text });
+    let promise = axios.put(`/api/food/${id}`, [text]);
+    //why does this only work when I encase text in an array? how to send req.body just as param?
     promise.then((res) => {
       this.setState({
         yourPlate: res.data
+
       })
     })
+    
   }
 
   updateEditedCalsInput(e) {
@@ -80,7 +87,15 @@ class App extends Component {
       })
     })
   }
-
+    
+  clearPlate () {
+    let promise = axios.delete(`/api/food`);
+    promise.then((res) => {
+      this.setState({
+        yourPlate: res.data
+      })
+    })
+  }
 
   componentDidMount() {
     let promise = axios.get(`/api/food`);
@@ -92,23 +107,31 @@ class App extends Component {
   }
 
   render() {
+
+    // User's Plate
     const plate = this.state.yourPlate.map(val => {
       return (
         <div key={val.id}>
-        <p>Food: {val.name}</p>
+        {/* Food Name */}
+        <p>{val.name}</p>
+        {/* Calorie Amount */}
         <p>Calories: {val.cals}</p>
-        <input placeholder='edit calories here' onChange={e => this.updateEditedCalsInput(e.target.value)}></input>
-        <button
-        onClick={() => {this.editPlateFoodCals(val.id, editedCals)}}>Change Calories Amount</button>
-        <button
-        onClick={() => {this.deletePlateFood(val.id)}}>Remove Food</button>
+        {/* Edit Calories NEEDS FIXING */}
+        <input type="text" id="inputbox" placeholder='Edit calorie # here' onChange={e => this.updateEditedCalsInput(e.target.value)}/>
+        <button id="button" value="Edit Calories" onClick={() => this.editPlateFoodCals(val.id, this.state.editedCals)}>Edit Calories</button>
+        {/* Delete Food NEEDS FIXING */}
+        <button onClick={() => {this.deletePlateFood(val.id)}}>Remove Food</button>
         </div>
       )
     })
-    const foodList = this.state.food.map(val => <button onClick={() => this.addToPlate(val.id)} key={val.id}>{val.name}</button>)
-    const plate = this.state.yourPlate.map(val => <p id={val.id} key={val.id}>{val.name}</p>)
-    // const editButton = this.state.yourPlate.map(val => <button id={val.id} key={val.id} onClick={this.editPlateFoodCals(val.id, this.state.editedCals)}></button>)
-    // const editCalsInputBox = this.state.yourPlate.map(e => <input onChange={e => this.updateEditedCalsInput(e.target.value)} />)
+    // Entire Food List
+    const foodList = this.state.food.map(val => {
+    return (
+    <button onClick={() => this.addToPlate(val.id)} 
+    key={val.id}>
+    {val.name}
+    </button>)})
+
     return (
       <div className="App">
         <Heading />
@@ -120,6 +143,15 @@ class App extends Component {
         <button onClick={() => this.addCustomFood(this.state.foodInput, this.state.calsInput)}>Add A Custom Snack</button>
         {/* Your Plate */}
         <div>{plate}</div>
+        {/* Clear Entire Plate */}
+        <button onClick={() => this.clearPlate()}>Clear Entire Plate</button>
+        {/* How many minutes of running to burn it off? */}
+        <RunResult 
+        yourPlate = {this.state.yourPlate}
+        foodList = {foodList}
+        />
+        {/* Dad Bod Joke Section */}
+
        
 
       </div>
