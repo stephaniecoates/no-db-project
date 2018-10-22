@@ -19,7 +19,6 @@ class App extends Component {
       editedCals: ''
     }
 
-
     this.addToPlate = this.addToPlate.bind(this);
     this.addCustomFood = this.addCustomFood.bind(this);
     this.updateCustomFoodInput = this.updateCustomFoodInput.bind(this);
@@ -27,9 +26,7 @@ class App extends Component {
     this.updateEditedCalsInput = this.updateEditedCalsInput.bind(this);
     this.deletePlateFood = this.deletePlateFood.bind(this);
     this.clearPlate= this.clearPlate.bind(this);
-  
   }
-
 
   addToPlate(id) {
     let promise = axios.post(`/api/food/${id}`)
@@ -71,9 +68,9 @@ class App extends Component {
       currentPlate.forEach(val => {
         return val.id === id ? val.cals = newCalorieValue : null
       })
-
       this.setState({
-        yourPlate: currentPlate
+        yourPlate: currentPlate,
+        editedCals: ''
       })   
   }
 
@@ -124,7 +121,7 @@ class App extends Component {
         <p>Calories: {val.cals}</p>
         {/* Edit Calories*/}
         <input type="text" id="inputbox" placeholder='Edit calorie # here' onChange={e => this.updateEditedCalsInput(e.target.value)}/>
-        <button id="button" value="Edit Calories" className="edit-calories-button" onClick={() => this.editPlateFoodCals(val.id, this.state.editedCals)}>Edit Calories</button>
+        <button id="button" className="edit-calories-button" onClick={() => this.editPlateFoodCals(val.id, this.state.editedCals)}>Edit Calories</button>
         {/* Delete Food*/}
         <button className="remove-food-button" onClick={() => {this.deletePlateFood(val.id)}}>Remove Food</button>
         </div>

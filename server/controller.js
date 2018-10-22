@@ -36,7 +36,8 @@ module.exports = {
         res.status(200).send(yourPlate)
     },
 
-    // editPlateFoodCals: (req, res) => {
+    //  FUNCTION MOVED TO FRONTEND
+    //  editPlateFoodCals: (req, res) => {
     //     let newCalorieValue = req.body[0];
     //     for (let i = 0; i < yourPlate.length; i++) {
     //         req.params.id == yourPlate[i].id ? yourPlate[i].cals = newCalorieValue : null
