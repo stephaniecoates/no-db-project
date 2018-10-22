@@ -32,11 +32,10 @@ class App extends Component {
 
 
   addToPlate(id) {
-    let promise = axios.get(`/api/food/${id}`)
+    let promise = axios.post(`/api/food/${id}`)
     promise.then((res) => {
-      let newPlate = [...this.state.yourPlate, res.data]
       this.setState({
-        yourPlate: newPlate
+        yourPlate: res.data
       })
     })
   }
@@ -45,7 +44,9 @@ class App extends Component {
     let promise = axios.post(`/api/food`, { name: foodInput, cals: calsInput })
     promise.then((res) => {
       this.setState({
-        yourPlate: res.data
+        yourPlate: res.data,
+        foodInput: '',
+        calsInput: ''
       })
     })
   }
@@ -62,16 +63,18 @@ class App extends Component {
     })
   }
 
-  editPlateFoodCals(id, text) {
-    let promise = axios.put(`/api/food/${id}`, [text]);
-    //why does this only work when I encase text in an array? how to send req.body just as param?
-    promise.then((res) => {
-      this.setState({
-        yourPlate: res.data
-
+  editPlateFoodCals(id, num) {
+    // let promise = axios.put(`/api/food/${id}`, [text]);
+    // promise.then((res) => {
+      let newCalorieValue = parseInt(num);
+      let currentPlate = this.state.yourPlate;
+      currentPlate.forEach(val => {
+        return val.id === id ? val.cals = newCalorieValue : null
       })
-    })
-    
+
+      this.setState({
+        yourPlate: currentPlate
+      })   
   }
 
   updateEditedCalsInput(e) {
@@ -90,7 +93,7 @@ class App extends Component {
   }
     
   clearPlate () {
-    let promise = axios.delete(`/api/food`);
+    let promise = axios.put(`/api/food`);
     promise.then((res) => {
       this.setState({
         yourPlate: res.data
@@ -108,7 +111,6 @@ class App extends Component {
   }
 
   render() {
-
     // User's Plate
     const plate = this.state.yourPlate.map(val => {
       return (
@@ -120,10 +122,10 @@ class App extends Component {
         <p>{val.name}</p>
         {/* Calorie Amount */}
         <p>Calories: {val.cals}</p>
-        {/* Edit Calories NEEDS FIXING */}
+        {/* Edit Calories*/}
         <input type="text" id="inputbox" placeholder='Edit calorie # here' onChange={e => this.updateEditedCalsInput(e.target.value)}/>
         <button id="button" value="Edit Calories" className="edit-calories-button" onClick={() => this.editPlateFoodCals(val.id, this.state.editedCals)}>Edit Calories</button>
-        {/* Delete Food NEEDS FIXING */}
+        {/* Delete Food*/}
         <button className="remove-food-button" onClick={() => {this.deletePlateFood(val.id)}}>Remove Food</button>
         </div>
       )
@@ -131,12 +133,13 @@ class App extends Component {
     // Entire Food List
     const foodList = this.state.food.map(val => {
     return (
-    <div className='total-food-list'>
+    <div key={val.id} className='total-food-list'>
     <button onClick={() => this.addToPlate(val.id)} 
     key={val.id}>
-    {<img className="food-image" src={val.img} alt='food'></img>}
+    {<img className="food-image" src={val.img} alt='food' key={val.id}></img>}
     {val.name}
     </button></div>)})
+
 
     return (
       <div className="App">
@@ -146,8 +149,8 @@ class App extends Component {
         <div>{foodList}</div>
         {/* Add Custom Foods Section */}
         <h4>...or add your own!</h4>
-        <input placeholder='Food Name' onChange={(e) => this.updateCustomFoodInput(e.target.value)}></input>
-        <input placeholder='Calories' onChange={(e) => this.updateCustomCalsInput(e.target.value)}></input>
+        <input placeholder='Food Name' onChange={(e) => this.updateCustomFoodInput(e.target.value)} value={this.state.foodInput}></input>
+        <input placeholder='Calories' onChange={(e) => this.updateCustomCalsInput(e.target.value)} value={this.state.calsInput}></input>
         <button onClick={() => this.addCustomFood(this.state.foodInput, this.state.calsInput)}>Add A Custom Snack</button>
         {/* Your Plate */}
         <div className='your-plate'>

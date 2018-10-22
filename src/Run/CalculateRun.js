@@ -3,7 +3,7 @@ export default function CalculateRun(props) {
     let calculatedFoods = props.yourPlate
     let calsArray = [];
     calculatedFoods.forEach(val => {
-        calsArray.push(val.cals)
+        calsArray.push(parseInt(val.cals))
     })
     let sum = calsArray.reduce((acc, cur) => acc + cur, 0)
 
