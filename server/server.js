@@ -22,6 +22,8 @@ app.delete(`/api/food/:id`, controller.deletePlateFood)
 
 app.delete(`/api/food`, controller.clearPlate)
 
+app.get(`https://aws.random.cat/meow`, controller.getCatPicture)
+
 
 app.listen(port, () => {
     console.log(`YEEHAW! Port ${port} is open for business.`)

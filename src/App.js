@@ -3,6 +3,7 @@ import './App.css';
 import axios from 'axios';
 import Heading from './Heading';
 import RunResult from './Run/RunResult';
+import CatPicture from './CatPicture';
 
 
 
@@ -111,50 +112,62 @@ class App extends Component {
     // User's Plate
     const plate = this.state.yourPlate.map(val => {
       return (
-        <div key={val.id}>
+        <div key={val.id}
+        className="plate-items">
+        {/* Food Image */}
+        <img className="food-image" alt='food' src={val.img}></img>
         {/* Food Name */}
         <p>{val.name}</p>
         {/* Calorie Amount */}
         <p>Calories: {val.cals}</p>
         {/* Edit Calories NEEDS FIXING */}
         <input type="text" id="inputbox" placeholder='Edit calorie # here' onChange={e => this.updateEditedCalsInput(e.target.value)}/>
-        <button id="button" value="Edit Calories" onClick={() => this.editPlateFoodCals(val.id, this.state.editedCals)}>Edit Calories</button>
+        <button id="button" value="Edit Calories" className="edit-calories-button" onClick={() => this.editPlateFoodCals(val.id, this.state.editedCals)}>Edit Calories</button>
         {/* Delete Food NEEDS FIXING */}
-        <button onClick={() => {this.deletePlateFood(val.id)}}>Remove Food</button>
+        <button className="remove-food-button" onClick={() => {this.deletePlateFood(val.id)}}>Remove Food</button>
         </div>
       )
     })
     // Entire Food List
     const foodList = this.state.food.map(val => {
     return (
+    <div className='total-food-list'>
     <button onClick={() => this.addToPlate(val.id)} 
     key={val.id}>
+    {<img className="food-image" src={val.img} alt='food'></img>}
     {val.name}
-    </button>)})
+    </button></div>)})
 
     return (
       <div className="App">
         <Heading />
         {/* Entire Group of Foods */}
+        <h4 className="choose-foods">Choose from these common snacks...</h4>
         <div>{foodList}</div>
         {/* Add Custom Foods Section */}
+        <h4>...or add your own!</h4>
         <input placeholder='Food Name' onChange={(e) => this.updateCustomFoodInput(e.target.value)}></input>
         <input placeholder='Calories' onChange={(e) => this.updateCustomCalsInput(e.target.value)}></input>
         <button onClick={() => this.addCustomFood(this.state.foodInput, this.state.calsInput)}>Add A Custom Snack</button>
         {/* Your Plate */}
+        <div className='your-plate'>
+        <h1 className="your-plate-header">What's On Your Plate?</h1>
         <div>{plate}</div>
+        </div>
         {/* Clear Entire Plate */}
-        <button onClick={() => this.clearPlate()}>Clear Entire Plate</button>
+        <button className="clear-all-button" onClick={() => this.clearPlate()}>Clear Entire Plate</button>
         {/* How many minutes of running to burn it off? */}
         <RunResult 
         yourPlate = {this.state.yourPlate}
         foodList = {foodList}
         />
-        {/* Dad Bod Joke Section */}
-
-       
-
-      </div>
+        {/* Cat Picture Section */}
+        <CatPicture />
+        {/* Footer */}
+        <div className="footer">
+          <p>Created by Stephanie Coates for DevMountain</p>
+        </div>
+        </div>
     );
   }
 }

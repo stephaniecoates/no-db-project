@@ -12,6 +12,7 @@ export default function CalculateRun(props) {
     let totalMins = Math.floor(sum / 10)
     let hours = Math.floor(totalMins / 60)
     let minutes = totalMins % 60
+   
     let finalRunningTime = `${hours} hour(s) and ${minutes} minutes`
     return (finalRunningTime);
 }
